@@ -28,7 +28,7 @@ def creat_json_profile(df):
         cloumns_dict.update({iter:iter})
     cloumns_dict = {"list":cloumns_dict}
 
-    #将字典写入json
+    # 将字典写入json
     with open('config\\PDlist.json','w',encoding='utf-8') as file:
         cloumns_dict = json.dumps(cloumns_dict,ensure_ascii=False,indent=4)
         file.write(cloumns_dict)
@@ -96,15 +96,34 @@ def icon_display(df):
 
 # 核对两个报表的某些列
 def match_check(df_original,df_reference):
-    unique = '单号'
+    get_filelist()
+    user_input_unique = input("请输入需要对比的两张表的唯一值 : ")
+    unique = user_input_unique
     # 根据某一列进行连接（例如，根据ID列）
     df_merged = pd.merge(df_original, df_reference, on=unique, how='left')
-    # 创建一个新的列来存储匹配结果
-    df_merged['Match金额'] = df_merged['金额'] == df_merged['sum']
-    df_merged['Match账号'] = df_merged['账号'] == df_merged['acct']
-    # print(df1_merged)
-    # 打印匹配结果
-    return df_merged
+    # 匹配核对
+    isFlag = True
+    while isFlag:
+        user_input_params = input("请输入需要核对的列，用英文逗号(,)隔开（例如需要表1的 账号 列核对表2的 acct 列时输入：账号,acct）：")
+        alllist = user_input_params.split(",")
+        # 创建一个新的列来存储匹配结果
+        df_merged[f'比对_{alllist[0]}列和{alllist[1]}列'] = df_merged[f'{alllist[0]}'] == df_merged[f'{alllist[1]}']
+        # 打印匹配结果
+        print(f'核对后的数据：\n{df_merged}')
+        print("""
+        是否继续核对:
+        0、退出
+        1、继续核对
+        """)
+        user_input = input("请出入操作步骤: ")
+        if user_input == '0':
+            break
+        elif user_input == '1':
+            continue
+        else:
+            print("输入的操作步骤有误~~~请重新输入!")
+    df_merged.to_csv('test\\merged.csv', index=False, encoding='GBK')
+    print('合并唯一值后的数据保存在以下路径 : test\\merged.csv')
 
 
 if __name__ == "__main__":
@@ -126,7 +145,6 @@ if __name__ == "__main__":
         3、图像展示
         4、数据核对
         """)
-
         user_input = input("请出入操作步骤: ")
         # 退出
         if user_input == '0':
@@ -142,9 +160,7 @@ if __name__ == "__main__":
             icon_display(df1)
         # 数据核对
         elif user_input == '4':
-            df1_merged = match_check(df1,df2)
-            print(f'核对后的数据：\n{df1_merged}')
-            df1_merged.to_csv('test\\merged.csv',index = False,encoding='GBK')
+            match_check(df1,df2)
         else:
             print("输入的操作步骤有误~~~请重新输入!")
 

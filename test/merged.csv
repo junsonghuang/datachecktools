@@ -1,10 +1,10 @@
-账号,单号,金额,acct,sum,Match金额,Match账号
+账号,单号,金额,acct,sum,比对_账号列和acct列,比对_金额列和sum列
 ABC-A,A110,15,ABC-A,15,True,True
-ABC-A,A111,16,ABC-A,12,False,True
-ABC-A,A111,15,ABC-A,12,False,True
+ABC-A,A111,16,ABC-A,12,True,False
+ABC-A,A111,15,ABC-A,12,True,False
 ABC-B,A111,25,ABC-A,12,False,False
 ABC-B,A111,65,ABC-A,12,False,False
-ABC-C,A115,35,ABC-C,40,False,True
+ABC-C,A115,35,ABC-C,40,True,False
 ABC-C,A116,16,ABC-C,16,True,True
-ABC-C,A116,35,ABC-C,16,False,True
-ABC-C,A116,15,ABC-C,16,False,True
+ABC-C,A116,35,ABC-C,16,True,False
+ABC-C,A116,15,ABC-C,16,True,False
