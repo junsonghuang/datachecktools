@@ -1,0 +1,10 @@
+ÕËºÅ,µ¥ºÅ,½ð¶î,acct,sum,Match½ð¶î,MatchÕËºÅ
+ABC-A,A110,15,ABC-A,15,True,True
+ABC-A,A111,16,ABC-A,12,False,True
+ABC-A,A111,15,ABC-A,12,False,True
+ABC-B,A111,25,ABC-A,12,False,False
+ABC-B,A111,65,ABC-A,12,False,False
+ABC-C,A115,35,ABC-C,40,False,True
+ABC-C,A116,16,ABC-C,16,True,True
+ABC-C,A116,35,ABC-C,16,False,True
+ABC-C,A116,15,ABC-C,16,False,True
