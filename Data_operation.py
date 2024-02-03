@@ -11,28 +11,27 @@ pd.options.mode.chained_assignment = None
 
 
 # 获取文件的所有列
-def get_filelist():
+def get_filelist(list):
     with open('config\\PDlist.json', 'r', encoding='utf-8') as file:
         jsondata = json.load(file)
-    print(f"这里是文件所有的列：{jsondata['list'].keys()}")
+    print(f"这里是文件所有的列：{jsondata[f'{list}'].keys()}")
 
 
 # 生成json配置文件
-def creat_json_profile(df):
+def creat_json_profile(df,list):
     # 获取文件的所有列
     cloumns_list = df.columns.tolist()
-
     # 将列写入字典
     cloumns_dict = {}
     for iter in cloumns_list:
         cloumns_dict.update({iter:iter})
-    cloumns_dict = {"list":cloumns_dict}
+    cloumns_dict = {f"{list}":cloumns_dict}
 
     # 将字典写入json
     with open('config\\PDlist.json','w',encoding='utf-8') as file:
         cloumns_dict = json.dumps(cloumns_dict,ensure_ascii=False,indent=4)
         file.write(cloumns_dict)
-
+        print(file)
 
 # 数据去重
 def Deduplication(df,subsetmult = []):
@@ -49,7 +48,7 @@ def Deduplication(df,subsetmult = []):
             df_duplicates = df.drop_duplicates(keep='first')
             isFlag = False
         elif user_input == '2':
-            get_filelist()
+            get_filelist('lsit1')
             user_input_params = input("请输入去重的唯一值列组合，用英文逗号(,)隔开：")
             # 设置指定列
             subsetmult += user_input_params.split(",")
@@ -66,14 +65,14 @@ def Deduplication(df,subsetmult = []):
 # 合并唯一值
 def add_unique(df):
     # 用户输入组合列
-    get_filelist()
+    get_filelist('list1')
     user_input_params = input("请输入唯一值列组合，用英文逗号(,)隔开：")
     alllist = user_input_params.split(",")
     # 合并唯一主键
     df_new_col = df.assign(unique_value = df[f'{alllist[0]}'])
     for iter in alllist[1:]:
-        print(1)
-        print(df_new_col)
+        # print(1)
+        # print(df_new_col)
         df_new_col['unique_value'] = df_new_col['unique_value'] + df_new_col[f'{iter}']
     print(f'合并唯一值之后的数据：{df_new_col}')
     df_new_col.to_csv('test\\new_data_unique.csv', index=False, encoding='GBK')
@@ -83,7 +82,7 @@ def add_unique(df):
 # 图标展示数据
 def icon_display(df):
     font_name = 'KaiTi'
-    get_filelist()
+    get_filelist('list1')
     user_input_params = input("请输入图标统计X轴列名和Y轴列名，用英文逗号(,)隔开：")
     list = user_input_params.split(",")
     plt.bar(df[f'{list[0]}'],df[f'{list[1]}'])
@@ -96,7 +95,7 @@ def icon_display(df):
 
 # 核对两个报表的某些列
 def match_check(df_original,df_reference):
-    get_filelist()
+    get_filelist('list1')
     user_input_unique = input("请输入需要对比的两张表的唯一值 : ")
     unique = user_input_unique
     # 根据某一列进行连接（例如，根据ID列）
@@ -104,6 +103,7 @@ def match_check(df_original,df_reference):
     # 匹配核对
     isFlag = True
     while isFlag:
+        print(f"连接两张表后的字段值：f{df_merged.columns}")
         user_input_params = input("请输入需要核对的列，用英文逗号(,)隔开（例如需要表1的 账号 列核对表2的 acct 列时输入：账号,acct）：")
         alllist = user_input_params.split(",")
         # 创建一个新的列来存储匹配结果
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     df2 = pd.read_csv('test\\test2.csv',index_col=False,encoding='GBK')
 
     # 根据导入的文件生成json配置文件
-    creat_json_profile(df1)
+    creat_json_profile(df1,'list1')
 
     # 开始选择操作步骤
     isFlag = True
