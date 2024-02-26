@@ -1,6 +1,8 @@
 # @Creater ：huangjunsong
 # @File : Data_operation.py
 # @Software : PyCharm
+
+import PySimpleGUI as psg
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
