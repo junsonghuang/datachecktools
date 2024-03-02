@@ -1,57 +1,26 @@
 import PySimpleGUI as sg
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-def window1():
-    layout = [[sg.Text('这是界面1')],
-              [sg.Button('返回')]]
+layout = [[sg.Canvas(size=(400,400), key='canvas')],
+          [sg.Button('绘制图形'), sg.Button('关闭')]]
 
-    window = sg.Window('界面1', layout)
+window = sg.Window('图形嵌入示例', layout)
 
-    while True:
-        event, values = window.read()
-
-        if event == sg.WINDOW_CLOSED or event == '返回':
-            break
-
-    window.close()
-
-def window2():
-    layout = [[sg.Text('这是界面2')],
-              [sg.Button('返回')]]
-
-    window = sg.Window('界面2', layout)
-
-    while True:
-        event, values = window.read()
-
-        if event == sg.WINDOW_CLOSED or event == '返回':
-            break
-
-    window.close()
-
-main_menu_def = [['文件', ['界面1', '界面2']],
-                ['帮助', ['关于']]]
-
-main_menu_layout = [[sg.Menu(main_menu_def)]]
-
-main_window_layout = [[sg.Text('这是主界面')],
-                      [sg.Button('退出')]]
-
-window = sg.Window('主界面', main_window_layout + main_menu_layout)
+def draw_plot():
+    fig, ax = plt.subplots()
+    ax.plot([1, 2, 3, 4], [1, 4, 9, 16])
+    canvas = FigureCanvasTkAgg(fig, window['canvas'].TKCanvas)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
 
 while True:
-    event, values = window.read()
+    event, _ = window.read()
 
-    if event == sg.WINDOW_CLOSED or event == '退出':
+    if event == sg.WINDOW_CLOSED or event == '关闭':
         break
-    elif event == '界面1':
-        window.hide()
-        window1()
-        window.un_hide()
-    elif event == '界面2':
-        window.hide()
-        window2()
-        window.un_hide()
-    elif event == '关于':
-        sg.popup('这是一个示例程序')
+
+    if event == '绘制图形':
+        draw_plot()
 
 window.close()
