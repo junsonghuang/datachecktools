@@ -146,8 +146,8 @@ def match_check(df_merged,alllist=[]):
 
 def import_csvfile():
     # 读取需要处理的数据
-    df1 = pd.read_csv('test\\test1.csv', index_col=False, encoding='GBK')
-    df2 = pd.read_csv('test\\test2.csv', index_col=False, encoding='GBK')
+    df1 = pd.read_csv('test\\test1.csv', index_col=False, encoding='gbk')
+    df2 = pd.read_csv('test\\test2.csv', index_col=False, encoding='gbk')
     return [df1,df2]
 
 

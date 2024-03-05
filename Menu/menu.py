@@ -6,6 +6,55 @@
 import PySimpleGUI as sg
 import Data_operation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import shutil
+
+
+def import_file():
+    layout = [
+        [sg.Text('请选择要导入的源文件（表1,被核对文件）：')],
+        [sg.Input(key='file_path1', enable_events=True), sg.FileBrowse(file_types=(("All Files", "*.*"),))],
+        [sg.Text('请选择要导入的目标文件（表2,核对文件）：')],
+        [sg.Input(key='file_path2', enable_events=True), sg.FileBrowse(file_types=(("All Files", "*.*"),))],
+        [sg.Button('导入', key='import'), sg.Button('返回主界面', key='cancel')]
+    ]
+
+    window = sg.Window('导入核对数据文件', layout, size=(600, 400), grab_anywhere=True, resizable=True)
+
+    while True:
+        event, values = window.read()
+
+        if event == sg.WINDOW_CLOSED or event == 'cancel':
+            break
+
+        if event == 'file_path1' or event == 'file_path2':
+            file_path1 = values['file_path1']
+            file_path2 = values['file_path2']
+            if file_path1 or file_path2:
+                window['import'].update(disabled=False)
+            else:
+                window['import'].update(disabled=True)
+
+        if event == 'import':
+            file_path1 = values['file_path1']
+            file_path2 = values['file_path2']
+            if file_path1 and file_path2:
+                try:
+                    # 指定保存目录
+                    save_directory1 = 'test\\test1.csv'
+                    save_directory2 = 'test\\test2.csv'
+                    # 将文件保存到指定目录中
+                    shutil.copy2(file_path1, save_directory1)
+                    sg.popup(f"文件已成功导入到 {save_directory1}")
+                    shutil.copy2(file_path2, save_directory2)
+                    sg.popup(f"文件已成功导入到 {save_directory2}")
+                except Exception as e:
+                    sg.popup_error(f"导入文件时发生错误：{e}")
+                break
+            else:
+                sg.popup_error("导入的文件不能为空，请选择。",title='错误')
+    window.close()
+    return True
+
 
 # 去重功能界面
 def window_deduplication(df):
@@ -108,7 +157,7 @@ def window_draw(df):
         [sg.Text('请输入图形标题名称：'),sg.Input(key='title')],
         [sg.Text("请选择X轴坐标值："),sg.Combo(all_list, key='Xlabel', size=(30, 10))],
         [sg.Text("请选择Y轴坐标值："), sg.Combo(all_list, key='Ylabel', size=(30, 10))],
-        [sg.Button('绘图',key='draw')],
+        [sg.Button('绘图',key='draw'),sg.Button('返回主界面')],
         [sg.Canvas(size=(400,400), key='canvas1')]
     ]
     window = sg.Window('绘图', layout, size=(600, 400), grab_anywhere=True, resizable=True)
@@ -126,6 +175,9 @@ def window_draw(df):
             canvas = FigureCanvasTkAgg(fig, window['canvas1'].TKCanvas)
             canvas.draw()
             canvas.get_tk_widget().pack()
+    window.close()
+    return True
+
 
 #主界面功能
 def main_window(df):
@@ -145,6 +197,8 @@ def main_window(df):
         print(event)
         if event == sg.WINDOW_CLOSE_ATTEMPTED_EVENT and sg.popup_yes_no('请确认是否需要退出软件?',title='确认退出') == 'Yes':
             break
+        elif event == '导入核对文件':
+            import_file()
         elif event == '去重':
             window_deduplication(df[0])
             window.un_hide()
